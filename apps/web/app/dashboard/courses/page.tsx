@@ -1,27 +1,9 @@
+import { getCourses } from "../../../lib/api";
 import Sidebar from "../components/Sidebar";
 
-const courses = [
-  {
-    code: "CS 3013",
-    name: "Operating Systems",
-    instructor: "Dr. Carter",
-    progress: 68,
-  },
-  {
-    code: "CS 3023",
-    name: "Computer Architecture",
-    instructor: "Dr. Nguyen",
-    progress: 54,
-  },
-  {
-    code: "CS 3203",
-    name: "Software Design & Development",
-    instructor: "Dr. Patel",
-    progress: 76,
-  },
-];
+export default async function CoursesPage() {
+  const courses = await getCourses();
 
-export default function CoursesPage() {
   return (
     <div className="dashboard-shell">
       <Sidebar />

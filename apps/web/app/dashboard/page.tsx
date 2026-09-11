@@ -1,6 +1,8 @@
+import { getHealth } from "../../lib/api";
 import Sidebar from "./components/Sidebar";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const health = await getHealth();
   return (
     <div className="dashboard-shell">
       <Sidebar />
@@ -11,9 +13,13 @@ export default function DashboardPage() {
             <p className="eyebrow">OVERVIEW</p>
             <h1>Good morning, Nerish.</h1>
             <p className="dashboard-subtitle">
-              Here’s what needs your attention today.
-            </p>
-          </div>
+  Here’s what needs your attention today.
+</p>
+
+<p className="api-status">
+  API status: {health.status}
+</p>
+</div>
         </section>
 
         <section className="dashboard-grid">

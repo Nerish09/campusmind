@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
+from app.api.routes.courses import router as courses_router
 from app.api.routes.health import router as health_router
 from app.core.config import settings
+
 
 app = FastAPI(
     title="CampusMind API",
@@ -9,7 +11,9 @@ app = FastAPI(
     description="Backend API for the CampusMind student operating system.",
 )
 
+
 app.include_router(health_router)
+app.include_router(courses_router)
 
 
 @app.get("/")
