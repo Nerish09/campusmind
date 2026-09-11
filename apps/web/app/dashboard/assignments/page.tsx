@@ -1,30 +1,9 @@
+import { getAssignments } from "../../../lib/api";
 import Sidebar from "../components/Sidebar";
 
-const assignments = [
-  {
-    course: "Operating Systems",
-    title: "Process Scheduling Lab",
-    due: "Tomorrow",
-    priority: "High",
-    status: "In progress",
-  },
-  {
-    course: "Computer Architecture",
-    title: "Cache Memory Worksheet",
-    due: "Friday",
-    priority: "Medium",
-    status: "Not started",
-  },
-  {
-    course: "Software Design & Development",
-    title: "Sprint Retrospective",
-    due: "Next Monday",
-    priority: "Low",
-    status: "Complete",
-  },
-];
+export default async function AssignmentsPage() {
+  const assignments = await getAssignments();
 
-export default function AssignmentsPage() {
   return (
     <div className="dashboard-shell">
       <Sidebar />
@@ -54,7 +33,7 @@ export default function AssignmentsPage() {
 
               <div className="assignment-meta">
                 <span className="assignment-pill">
-                  {assignment.priority} priority
+                  {assignment.priority}
                 </span>
 
                 <span className="assignment-status">

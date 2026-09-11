@@ -31,3 +31,23 @@ export async function getCourses(): Promise<Course[]> {
 
   return response.json();
 }
+
+export type Assignment = {
+  course: string;
+  title: string;
+  due: string;
+  priority: string;
+  status: string;
+};
+
+export async function getAssignments(): Promise<Assignment[]> {
+  const response = await fetch(`${API_URL}/assignments`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch assignments");
+  }
+
+  return response.json();
+}
