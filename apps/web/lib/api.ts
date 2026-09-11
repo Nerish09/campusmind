@@ -70,3 +70,28 @@ export async function getStudySessions(): Promise<StudySession[]> {
 
   return response.json();
 }
+
+export type AssistantResponse = {
+  message: string;
+  response: string;
+};
+
+export async function askAssistant(
+  message: string
+): Promise<AssistantResponse> {
+  const response = await fetch(`${API_URL}/assistant`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: message,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to get assistant response");
+  }
+
+  return response.json();
+}

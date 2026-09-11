@@ -1,3 +1,8 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+
+import { askAssistant } from "../../../lib/api";
 import Sidebar from "../components/Sidebar";
 
 const suggestions = [
@@ -7,6 +12,38 @@ const suggestions = [
 ];
 
 export default function AssistantPage() {
+  const [message, setMessage] = useState("");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const trimmedMessage = message.trim();
+
+    if (!trimmedMessage) {
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setResponse("");
+
+    try {
+      const data = await askAssistant(trimmedMessage);
+      setResponse(data.response);
+    } catch {
+      setError("CampusMind AI is unavailable right now.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function useSuggestion(suggestion: string) {
+    setMessage(suggestion);
+  }
+
   return (
     <div className="dashboard-shell">
       <Sidebar />
@@ -38,18 +75,42 @@ export default function AssistantPage() {
 
             <div className="assistant-suggestions">
               {suggestions.map((suggestion) => (
-                <button key={suggestion}>{suggestion}</button>
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => useSuggestion(suggestion)}
+                >
+                  {suggestion}
+                </button>
               ))}
             </div>
 
-            <div className="assistant-input">
+            {response && (
+              <div className="assistant-response">
+                <p className="card-label">RESPONSE</p>
+                <p>{response}</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="assistant-response">
+                <p className="card-label">ERROR</p>
+                <p>{error}</p>
+              </div>
+            )}
+
+            <form className="assistant-input" onSubmit={handleSubmit}>
               <input
                 type="text"
                 placeholder="Ask CampusMind anything..."
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
               />
 
-              <button type="button">Send</button>
-            </div>
+              <button type="submit" disabled={loading}>
+                {loading ? "Thinking..." : "Send"}
+              </button>
+            </form>
           </div>
 
           <aside className="assistant-context">
