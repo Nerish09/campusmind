@@ -1,29 +1,23 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.models.course import Course
 
 router = APIRouter(prefix="/courses", tags=["courses"])
 
-courses = [
-    {
-        "code": "CS 3013",
-        "name": "Operating Systems",
-        "instructor": "Dr. Carter",
-        "progress": 68,
-    },
-    {
-        "code": "CS 3023",
-        "name": "Computer Architecture",
-        "instructor": "Dr. Nguyen",
-        "progress": 54,
-    },
-    {
-        "code": "CS 3203",
-        "name": "Software Design & Development",
-        "instructor": "Dr. Patel",
-        "progress": 76,
-    },
-]
-
 
 @router.get("")
-def get_courses():
-    return courses
+def get_courses(db: Session = Depends(get_db)):
+    courses = db.scalars(select(Course).order_by(Course.id)).all()
+
+    return [
+        {
+            "code": course.code,
+            "name": course.name,
+            "instructor": course.instructor,
+            "progress": course.progress,
+        }
+        for course in courses
+    ]
