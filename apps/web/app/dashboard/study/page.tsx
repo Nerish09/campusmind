@@ -1,27 +1,9 @@
+import { getStudySessions } from "../../../lib/api";
 import Sidebar from "../components/Sidebar";
 
-const studySessions = [
-  {
-    subject: "Operating Systems",
-    topic: "CPU Scheduling",
-    duration: "50 min",
-    status: "Completed",
-  },
-  {
-    subject: "Computer Architecture",
-    topic: "Cache Mapping",
-    duration: "35 min",
-    status: "Completed",
-  },
-  {
-    subject: "Software Design & Development",
-    topic: "Design Patterns",
-    duration: "60 min",
-    status: "Planned",
-  },
-];
+export default async function StudyPage() {
+  const studySessions = await getStudySessions();
 
-export default function StudyPage() {
   return (
     <div className="dashboard-shell">
       <Sidebar />
@@ -46,8 +28,8 @@ export default function StudyPage() {
 
           <article className="dashboard-card">
             <p className="card-label">Sessions</p>
-            <h2>6</h2>
-            <p>Completed study sessions this week.</p>
+            <h2>{studySessions.length}</h2>
+            <p>Study sessions currently tracked.</p>
           </article>
 
           <article className="dashboard-card">

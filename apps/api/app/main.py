@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes.health import router as health_router
-from app.api.routes.courses import router as courses_router
 from app.api.routes.assignments import router as assignments_router
+from app.api.routes.courses import router as courses_router
+from app.api.routes.health import router as health_router
+from app.api.routes.study import router as study_router
 from app.core.config import settings
 
 
@@ -14,7 +15,6 @@ app = FastAPI(
 )
 
 
-# Allow the Next.js frontend to communicate with FastAPI
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,10 +27,10 @@ app.add_middleware(
 )
 
 
-# API routes
 app.include_router(health_router)
 app.include_router(courses_router)
 app.include_router(assignments_router)
+app.include_router(study_router)
 
 
 @app.get("/")

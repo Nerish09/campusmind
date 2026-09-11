@@ -51,3 +51,22 @@ export async function getAssignments(): Promise<Assignment[]> {
 
   return response.json();
 }
+
+export type StudySession = {
+  subject: string;
+  topic: string;
+  duration: string;
+  status: string;
+};
+
+export async function getStudySessions(): Promise<StudySession[]> {
+  const response = await fetch(`${API_URL}/study-sessions`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch study sessions");
+  }
+
+  return response.json();
+}
