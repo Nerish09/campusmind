@@ -1,117 +1,168 @@
 # CampusMind
 
-CampusMind is a production-style AI student operating system built as a portfolio flagship project.
+CampusMind is a full-stack student productivity platform for managing courses, assignments, study sessions, academic progress, and study recommendations.
 
-## Vision
+## Features
 
-Help college students organize courses, deadlines, study material, and learning progress in one place, with AI features that are grounded in the student's own content.
+### Courses
 
-## V1 goals
+- Create courses
+- Edit course details
+- Delete courses
+- Track progress with percentage sliders
+- Prevent duplicate course codes
+- Validate progress between 0 and 100
 
-- User accounts and authentication
-- Courses
-- Tasks and deadlines
-- Study dashboard
-- Document upload
-- AI question answering over uploaded course material
-- PostgreSQL persistence
-- Redis-backed caching/session support
-- Dockerized local development
-- Automated tests
-- CI with GitHub Actions
+### Assignments
 
-## Architecture
+- Create assignments
+- Edit assignments
+- Delete assignments
+- Track:
+  - Course
+  - Due date
+  - Priority
+  - Status
+- Priority levels:
+  - Low priority
+  - Medium priority
+  - High priority
+- Status levels:
+  - Not started
+  - In progress
+  - Complete
+
+### Study Sessions
+
+- Create study sessions
+- Edit study sessions
+- Delete study sessions
+- Start planned sessions
+- Complete active sessions
+- Track:
+  - Course
+  - Topic
+  - Duration
+  - Status
+- Dynamic metrics:
+  - Completed study time
+  - Total sessions
+  - In-progress sessions
+
+### Dashboard
+
+The dashboard is backed by live API/database data and displays:
+
+- Completed study time
+- Number of active courses
+- Average course progress
+- Highest-priority incomplete assignment
+
+### CampusMind Assistant
+
+CampusMind includes a database-aware academic assistant that can help with:
+
+- Study recommendations
+- Assignment prioritization
+- Course progress analysis
+
+The assistant uses CampusMind course, assignment, and study-session data to generate recommendations.
+
+### User Experience
+
+- Responsive dark-mode dashboard
+- Custom confirmation modals
+- Toast notifications
+- Loading states
+- Error handling
+- Course progress sliders
+- Study duration sliders
+- Priority and status badges
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- Next.js
+- React
+- TypeScript
+- CSS
+
+## Backend
+
+- Python
+- FastAPI
+- Pydantic
+- SQLAlchemy
+
+## Database
+
+- PostgreSQL
+- Docker
+
+## Testing
+
+- Pytest
+- FastAPI TestClient
+- TypeScript build validation
+- Next.js production build validation
+
+## Development Tools
+
+- Git
+- GitHub
+- REST APIs
+- Swagger / OpenAPI
+- Docker Compose
+
+---
+
+# Architecture
 
 ```text
-Browser
-  |
-  v
-Next.js / TypeScript
-  |
-  v
-FastAPI / Python
-  |
-  +--> PostgreSQL
-  |
-  +--> Redis
-  |
-  +--> AI / Embeddings layer (Phase 2)
+Next.js / React / TypeScript
+            |
+            | REST API
+            v
+       FastAPI / Python
+            |
+            v
+        SQLAlchemy
+            |
+            v
+        PostgreSQL
+            |
+            v
+          Docker
 ```
 
-## Monorepo layout
+# Project Structure
 
 ```text
 campusmind/
+│
 ├── apps/
-│   ├── web/           # Next.js frontend
-│   └── api/           # FastAPI backend
-├── docs/              # Architecture and product docs
-├── .github/workflows/ # CI
+│   ├── api/
+│   │   ├── app/
+│   │   │   ├── api/
+│   │   │   │   └── routes/
+│   │   │   ├── models/
+│   │   │   ├── database.py
+│   │   │   └── main.py
+│   │   │
+│   │   ├── scripts/
+│   │   │   └── seed_demo.py
+│   │   │
+│   │   └── tests/
+│   │
+│   └── web/
+│       ├── app/
+│       │   └── dashboard/
+│       └── lib/
+│
 ├── docker-compose.yml
-└── README.md
+├── README.md
+└── .gitignore
 ```
-
-## Local development
-
-### Backend
-
-```bash
-cd apps/api
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-Backend health check:
-
-```text
-http://localhost:8000/health
-```
-
-### Frontend
-
-```bash
-cd apps/web
-npm install
-npm run dev
-```
-
-Frontend:
-
-```text
-http://localhost:3000
-```
-
-### Infrastructure
-
-```bash
-docker compose up -d
-```
-
-This starts PostgreSQL and Redis.
-
-## Current milestone
-
-Milestone 0: engineering foundation.
-
-The first code establishes:
-- monorepo structure
-- FastAPI service
-- Next.js frontend
-- PostgreSQL + Redis local infrastructure
-- backend tests
-- GitHub Actions CI
-- architecture documentation
-
-## Planned milestones
-
-1. Authentication and users
-2. Courses and tasks
-3. Dashboard and analytics
-4. Document ingestion
-5. RAG-based AI study assistant
-6. Real-time study rooms / notifications
-7. Production deployment
-8. Usage analytics and user feedback
-9. Public beta

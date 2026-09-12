@@ -18,6 +18,7 @@ import {
   updateStudySessionStatus,
 } from "../../../lib/api";
 
+import ConfirmModal from "../components/ConfirmModal";
 import Sidebar from "../components/Sidebar";
 
 const statuses = [
@@ -76,6 +77,11 @@ export default function StudyPage() {
     deletingSessionId,
     setDeletingSessionId,
   ] = useState<number | null>(null);
+
+  const [
+    sessionToDelete,
+    setSessionToDelete,
+  ] = useState<StudySession | null>(null);
 
   const [error, setError] =
     useState("");
@@ -294,27 +300,44 @@ export default function StudyPage() {
     }
   }
 
-  async function handleDelete(
+  function requestDelete(
     session: StudySession
   ) {
-    const confirmed =
-      window.confirm(
-        `Delete "${session.topic}" from ${session.subject}?`
-      );
+    setSessionToDelete(
+      session
+    );
 
-    if (!confirmed) {
+    setError("");
+  }
+
+  function cancelDelete() {
+    if (
+      deletingSessionId !== null
+    ) {
+      return;
+    }
+
+    setSessionToDelete(null);
+  }
+
+  async function confirmDelete() {
+    if (!sessionToDelete) {
       return;
     }
 
     setDeletingSessionId(
-      session.id
+      sessionToDelete.id
     );
 
     setError("");
 
     try {
       await deleteStudySession(
-        session.id
+        sessionToDelete.id
+      );
+
+      setSessionToDelete(
+        null
       );
 
       await loadStudySessions();
@@ -973,7 +996,7 @@ export default function StudyPage() {
                             type="button"
                             className="danger-button"
                             onClick={() =>
-                              handleDelete(
+                              requestDelete(
                                 session
                               )
                             }
@@ -982,10 +1005,7 @@ export default function StudyPage() {
                               session.id
                             }
                           >
-                            {deletingSessionId ===
-                            session.id
-                              ? "Deleting..."
-                              : "Delete"}
+                            Delete
                           </button>
                         </div>
                       </>
@@ -997,6 +1017,34 @@ export default function StudyPage() {
           </div>
         </section>
       </main>
+
+      <ConfirmModal
+        open={
+          sessionToDelete !==
+          null
+        }
+        title={
+          sessionToDelete
+            ? `Delete ${sessionToDelete.topic}?`
+            : "Delete study session?"
+        }
+        message={
+          sessionToDelete
+            ? `This will permanently delete the "${sessionToDelete.topic}" study session from ${sessionToDelete.subject}. This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete session"
+        loading={
+          sessionToDelete !==
+            null &&
+          deletingSessionId ===
+            sessionToDelete.id
+        }
+        onCancel={cancelDelete}
+        onConfirm={
+          confirmDelete
+        }
+      />
     </div>
   );
 }

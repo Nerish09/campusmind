@@ -1,3 +1,5 @@
+import { showToast } from "./toast";
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
@@ -69,12 +71,21 @@ export async function createCourse(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to create course",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to create course"
     );
   }
 
-  return response.json();
+  const result = await response.json();
+
+  showToast("Course created");
+
+  return result;
 }
 
 export async function updateCourse(
@@ -92,12 +103,21 @@ export async function updateCourse(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to update course",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to update course"
     );
   }
 
-  return response.json();
+  const result = await response.json();
+
+  showToast("Course updated");
+
+  return result;
 }
 
 export async function deleteCourse(
@@ -110,10 +130,17 @@ export async function deleteCourse(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to delete course",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to delete course"
     );
   }
+
+  showToast("Course deleted");
 }
 
 // --------------------
@@ -172,12 +199,21 @@ export async function createAssignment(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to create assignment",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to create assignment"
     );
   }
 
-  return response.json();
+  const result = await response.json();
+
+  showToast("Assignment created");
+
+  return result;
 }
 
 export async function updateAssignment(
@@ -198,12 +234,21 @@ export async function updateAssignment(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to update assignment",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to update assignment"
     );
   }
 
-  return response.json();
+  const result = await response.json();
+
+  showToast("Assignment updated");
+
+  return result;
 }
 
 export async function deleteAssignment(
@@ -219,10 +264,17 @@ export async function deleteAssignment(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to delete assignment",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to delete assignment"
     );
   }
+
+  showToast("Assignment deleted");
 }
 
 // --------------------
@@ -279,12 +331,21 @@ export async function createStudySession(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to create study session",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to create study session"
     );
   }
 
-  return response.json();
+  const result = await response.json();
+
+  showToast("Study session created");
+
+  return result;
 }
 
 export async function updateStudySession(
@@ -305,12 +366,21 @@ export async function updateStudySession(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to update study session",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to update study session"
     );
   }
 
-  return response.json();
+  const result = await response.json();
+
+  showToast("Study session updated");
+
+  return result;
 }
 
 export async function updateStudySessionStatus(
@@ -335,10 +405,17 @@ export async function deleteStudySession(
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
 
+    showToast(
+      errorData?.detail || "Failed to delete study session",
+      "error"
+    );
+
     throw new Error(
       errorData?.detail || "Failed to delete study session"
     );
   }
+
+  showToast("Study session deleted");
 }
 
 // --------------------
@@ -364,6 +441,11 @@ export async function askAssistant(
   });
 
   if (!response.ok) {
+    showToast(
+      "Failed to get assistant response",
+      "error"
+    );
+
     throw new Error("Failed to get assistant response");
   }
 

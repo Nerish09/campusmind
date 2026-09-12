@@ -12,6 +12,7 @@ import {
   updateAssignment,
 } from "../../../lib/api";
 
+import ConfirmModal from "../components/ConfirmModal";
 import Sidebar from "../components/Sidebar";
 
 const priorities = [
@@ -27,57 +28,102 @@ const statuses = [
 ];
 
 export default function AssignmentsPage() {
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [assignments, setAssignments] =
+    useState<Assignment[]>([]);
 
-  const [showForm, setShowForm] = useState(false);
+  const [courses, setCourses] =
+    useState<Course[]>([]);
 
-  const [courseId, setCourseId] = useState<number>(0);
-  const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState("Medium priority");
-  const [status, setStatus] = useState("Not started");
+  const [showForm, setShowForm] =
+    useState(false);
 
-  const [editingAssignmentId, setEditingAssignmentId] =
-    useState<number | null>(null);
+  const [courseId, setCourseId] =
+    useState<number>(0);
 
-  const [editCourseId, setEditCourseId] = useState<number>(0);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDueDate, setEditDueDate] = useState("");
+  const [title, setTitle] =
+    useState("");
+
+  const [dueDate, setDueDate] =
+    useState("");
+
+  const [priority, setPriority] =
+    useState("Medium priority");
+
+  const [status, setStatus] =
+    useState("Not started");
+
+  const [
+    editingAssignmentId,
+    setEditingAssignmentId,
+  ] = useState<number | null>(null);
+
+  const [editCourseId, setEditCourseId] =
+    useState<number>(0);
+
+  const [editTitle, setEditTitle] =
+    useState("");
+
+  const [editDueDate, setEditDueDate] =
+    useState("");
+
   const [editPriority, setEditPriority] =
     useState("Medium priority");
+
   const [editStatus, setEditStatus] =
     useState("Not started");
 
-  const [loading, setLoading] = useState(false);
-  const [updatingAssignmentId, setUpdatingAssignmentId] =
-    useState<number | null>(null);
-  const [deletingAssignmentId, setDeletingAssignmentId] =
-    useState<number | null>(null);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [error, setError] = useState("");
+  const [
+    updatingAssignmentId,
+    setUpdatingAssignmentId,
+  ] = useState<number | null>(null);
+
+  const [
+    deletingAssignmentId,
+    setDeletingAssignmentId,
+  ] = useState<number | null>(null);
+
+  const [
+    assignmentToDelete,
+    setAssignmentToDelete,
+  ] = useState<Assignment | null>(null);
+
+  const [error, setError] =
+    useState("");
 
   async function loadAssignments() {
     try {
-      const data = await getAssignments();
+      const data =
+        await getAssignments();
+
       setAssignments(data);
     } catch {
-      setError("Failed to load assignments.");
+      setError(
+        "Failed to load assignments."
+      );
     }
   }
 
   async function loadCourses() {
     try {
-      const data = await getCourses();
+      const data =
+        await getCourses();
+
       setCourses(data);
 
       if (data.length > 0) {
         setCourseId((current) =>
-          current === 0 ? data[0].id : current
+          current === 0
+            ? data[0].id
+            : current
         );
       }
     } catch {
-      setError("Failed to load courses.");
+      setError(
+        "Failed to load courses."
+      );
     }
   }
 
@@ -96,7 +142,9 @@ export default function AssignmentsPage() {
       !title.trim() ||
       !dueDate.trim()
     ) {
-      setError("Please complete all assignment fields.");
+      setError(
+        "Please complete all assignment fields."
+      );
       return;
     }
 
@@ -123,20 +171,42 @@ export default function AssignmentsPage() {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Failed to create assignment.");
+        setError(
+          "Failed to create assignment."
+        );
       }
     } finally {
       setLoading(false);
     }
   }
 
-  function startEditing(assignment: Assignment) {
-    setEditingAssignmentId(assignment.id);
-    setEditCourseId(assignment.course_id);
-    setEditTitle(assignment.title);
-    setEditDueDate(assignment.due);
-    setEditPriority(assignment.priority);
-    setEditStatus(assignment.status);
+  function startEditing(
+    assignment: Assignment
+  ) {
+    setEditingAssignmentId(
+      assignment.id
+    );
+
+    setEditCourseId(
+      assignment.course_id
+    );
+
+    setEditTitle(
+      assignment.title
+    );
+
+    setEditDueDate(
+      assignment.due
+    );
+
+    setEditPriority(
+      assignment.priority
+    );
+
+    setEditStatus(
+      assignment.status
+    );
+
     setError("");
   }
 
@@ -156,61 +226,103 @@ export default function AssignmentsPage() {
       !editTitle.trim() ||
       !editDueDate.trim()
     ) {
-      setError("Please complete all assignment fields.");
+      setError(
+        "Please complete all assignment fields."
+      );
       return;
     }
 
-    setUpdatingAssignmentId(assignmentId);
+    setUpdatingAssignmentId(
+      assignmentId
+    );
+
     setError("");
 
     try {
-      await updateAssignment(assignmentId, {
-        course_id: editCourseId,
-        title: editTitle.trim(),
-        due_date: editDueDate.trim(),
-        priority: editPriority,
-        status: editStatus,
-      });
+      await updateAssignment(
+        assignmentId,
+        {
+          course_id: editCourseId,
+          title: editTitle.trim(),
+          due_date: editDueDate.trim(),
+          priority: editPriority,
+          status: editStatus,
+        }
+      );
 
-      setEditingAssignmentId(null);
+      setEditingAssignmentId(
+        null
+      );
 
       await loadAssignments();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Failed to update assignment.");
+        setError(
+          "Failed to update assignment."
+        );
       }
     } finally {
-      setUpdatingAssignmentId(null);
+      setUpdatingAssignmentId(
+        null
+      );
     }
   }
 
-  async function handleDelete(
+  function requestDelete(
     assignment: Assignment
   ) {
-    const confirmed = window.confirm(
-      `Delete "${assignment.title}"?`
+    setAssignmentToDelete(
+      assignment
     );
 
-    if (!confirmed) {
+    setError("");
+  }
+
+  function cancelDelete() {
+    if (
+      deletingAssignmentId !== null
+    ) {
       return;
     }
 
-    setDeletingAssignmentId(assignment.id);
+    setAssignmentToDelete(null);
+  }
+
+  async function confirmDelete() {
+    if (!assignmentToDelete) {
+      return;
+    }
+
+    setDeletingAssignmentId(
+      assignmentToDelete.id
+    );
+
     setError("");
 
     try {
-      await deleteAssignment(assignment.id);
+      await deleteAssignment(
+        assignmentToDelete.id
+      );
+
+      setAssignmentToDelete(
+        null
+      );
+
       await loadAssignments();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError("Failed to delete assignment.");
+        setError(
+          "Failed to delete assignment."
+        );
       }
     } finally {
-      setDeletingAssignmentId(null);
+      setDeletingAssignmentId(
+        null
+      );
     }
   }
 
@@ -228,14 +340,18 @@ export default function AssignmentsPage() {
             <h1>Your workload</h1>
 
             <p className="dashboard-subtitle">
-              Track deadlines, priority, and assignment progress.
+              Track deadlines, priority,
+              and assignment progress.
             </p>
           </div>
 
           <button
             type="button"
             onClick={() => {
-              setShowForm((current) => !current);
+              setShowForm(
+                (current) => !current
+              );
+
               setError("");
             }}
           >
@@ -249,35 +365,59 @@ export default function AssignmentsPage() {
           <section className="study-section">
             <form
               className="assignment-form"
-              onSubmit={handleCreate}
+              onSubmit={
+                handleCreate
+              }
             >
               <div className="assignment-form-field">
-                <label htmlFor="assignment-course">
+                <label
+                  htmlFor="assignment-course"
+                >
                   Course
                 </label>
 
                 <select
                   id="assignment-course"
                   value={courseId}
-                  onChange={(event) =>
+                  onChange={(
+                    event
+                  ) =>
                     setCourseId(
-                      Number(event.target.value)
+                      Number(
+                        event
+                          .target
+                          .value
+                      )
                     )
                   }
                 >
-                  {courses.map((course) => (
-                    <option
-                      key={course.id}
-                      value={course.id}
-                    >
-                      {course.code} — {course.name}
-                    </option>
-                  ))}
+                  {courses.map(
+                    (course) => (
+                      <option
+                        key={
+                          course.id
+                        }
+                        value={
+                          course.id
+                        }
+                      >
+                        {
+                          course.code
+                        }{" "}
+                        —{" "}
+                        {
+                          course.name
+                        }
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
               <div className="assignment-form-field">
-                <label htmlFor="assignment-title">
+                <label
+                  htmlFor="assignment-title"
+                >
                   Assignment
                 </label>
 
@@ -286,14 +426,22 @@ export default function AssignmentsPage() {
                   type="text"
                   placeholder="Example: Database Project"
                   value={title}
-                  onChange={(event) =>
-                    setTitle(event.target.value)
+                  onChange={(
+                    event
+                  ) =>
+                    setTitle(
+                      event
+                        .target
+                        .value
+                    )
                   }
                 />
               </div>
 
               <div className="assignment-form-field">
-                <label htmlFor="assignment-due">
+                <label
+                  htmlFor="assignment-due"
+                >
                   Due
                 </label>
 
@@ -302,55 +450,89 @@ export default function AssignmentsPage() {
                   type="text"
                   placeholder="Example: Friday"
                   value={dueDate}
-                  onChange={(event) =>
-                    setDueDate(event.target.value)
+                  onChange={(
+                    event
+                  ) =>
+                    setDueDate(
+                      event
+                        .target
+                        .value
+                    )
                   }
                 />
               </div>
 
               <div className="assignment-form-field">
-                <label htmlFor="assignment-priority">
+                <label
+                  htmlFor="assignment-priority"
+                >
                   Priority
                 </label>
 
                 <select
                   id="assignment-priority"
                   value={priority}
-                  onChange={(event) =>
-                    setPriority(event.target.value)
+                  onChange={(
+                    event
+                  ) =>
+                    setPriority(
+                      event
+                        .target
+                        .value
+                    )
                   }
                 >
-                  {priorities.map((item) => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  ))}
+                  {priorities.map(
+                    (item) => (
+                      <option
+                        key={
+                          item
+                        }
+                        value={
+                          item
+                        }
+                      >
+                        {item}
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
               <div className="assignment-form-field">
-                <label htmlFor="assignment-status">
+                <label
+                  htmlFor="assignment-status"
+                >
                   Status
                 </label>
 
                 <select
                   id="assignment-status"
                   value={status}
-                  onChange={(event) =>
-                    setStatus(event.target.value)
+                  onChange={(
+                    event
+                  ) =>
+                    setStatus(
+                      event
+                        .target
+                        .value
+                    )
                   }
                 >
-                  {statuses.map((item) => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  ))}
+                  {statuses.map(
+                    (item) => (
+                      <option
+                        key={
+                          item
+                        }
+                        value={
+                          item
+                        }
+                      >
+                        {item}
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
@@ -373,215 +555,327 @@ export default function AssignmentsPage() {
         )}
 
         <section className="assignment-list">
-          {assignments.map((assignment) => {
-            const isEditing =
-              editingAssignmentId ===
-              assignment.id;
+          {assignments.map(
+            (assignment) => {
+              const isEditing =
+                editingAssignmentId ===
+                assignment.id;
 
-            return (
-              <article
-                className="assignment-card"
-                key={assignment.id}
-              >
-                {isEditing ? (
-                  <form
-                    className="assignment-edit-form"
-                    onSubmit={(event) =>
-                      handleUpdate(
-                        event,
-                        assignment.id
-                      )
-                    }
-                  >
-                    <div className="assignment-form-field">
-                      <label>Course</label>
+              return (
+                <article
+                  className="assignment-card"
+                  key={
+                    assignment.id
+                  }
+                >
+                  {isEditing ? (
+                    <form
+                      className="assignment-edit-form"
+                      onSubmit={(
+                        event
+                      ) =>
+                        handleUpdate(
+                          event,
+                          assignment.id
+                        )
+                      }
+                    >
+                      <div className="assignment-form-field">
+                        <label>
+                          Course
+                        </label>
 
-                      <select
-                        value={editCourseId}
-                        onChange={(event) =>
-                          setEditCourseId(
-                            Number(
-                              event.target.value
+                        <select
+                          value={
+                            editCourseId
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            setEditCourseId(
+                              Number(
+                                event
+                                  .target
+                                  .value
+                              )
                             )
-                          )
-                        }
-                      >
-                        {courses.map((course) => (
-                          <option
-                            key={course.id}
-                            value={course.id}
-                          >
-                            {course.code} —{" "}
-                            {course.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                          }
+                        >
+                          {courses.map(
+                            (course) => (
+                              <option
+                                key={
+                                  course.id
+                                }
+                                value={
+                                  course.id
+                                }
+                              >
+                                {
+                                  course.code
+                                }{" "}
+                                —{" "}
+                                {
+                                  course.name
+                                }
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
 
-                    <div className="assignment-form-field">
-                      <label>
-                        Assignment
-                      </label>
+                      <div className="assignment-form-field">
+                        <label>
+                          Assignment
+                        </label>
 
-                      <input
-                        type="text"
-                        value={editTitle}
-                        onChange={(event) =>
-                          setEditTitle(
-                            event.target.value
-                          )
-                        }
-                      />
-                    </div>
+                        <input
+                          type="text"
+                          value={
+                            editTitle
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            setEditTitle(
+                              event
+                                .target
+                                .value
+                            )
+                          }
+                        />
+                      </div>
 
-                    <div className="assignment-form-field">
-                      <label>Due</label>
+                      <div className="assignment-form-field">
+                        <label>
+                          Due
+                        </label>
 
-                      <input
-                        type="text"
-                        value={editDueDate}
-                        onChange={(event) =>
-                          setEditDueDate(
-                            event.target.value
-                          )
-                        }
-                      />
-                    </div>
+                        <input
+                          type="text"
+                          value={
+                            editDueDate
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            setEditDueDate(
+                              event
+                                .target
+                                .value
+                            )
+                          }
+                        />
+                      </div>
 
-                    <div className="assignment-form-field">
-                      <label>Priority</label>
+                      <div className="assignment-form-field">
+                        <label>
+                          Priority
+                        </label>
 
-                      <select
-                        value={editPriority}
-                        onChange={(event) =>
-                          setEditPriority(
-                            event.target.value
-                          )
-                        }
-                      >
-                        {priorities.map((item) => (
-                          <option
-                            key={item}
-                            value={item}
-                          >
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                        <select
+                          value={
+                            editPriority
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            setEditPriority(
+                              event
+                                .target
+                                .value
+                            )
+                          }
+                        >
+                          {priorities.map(
+                            (item) => (
+                              <option
+                                key={
+                                  item
+                                }
+                                value={
+                                  item
+                                }
+                              >
+                                {item}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
 
-                    <div className="assignment-form-field">
-                      <label>Status</label>
+                      <div className="assignment-form-field">
+                        <label>
+                          Status
+                        </label>
 
-                      <select
-                        value={editStatus}
-                        onChange={(event) =>
-                          setEditStatus(
-                            event.target.value
-                          )
-                        }
-                      >
-                        {statuses.map((item) => (
-                          <option
-                            key={item}
-                            value={item}
-                          >
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                        <select
+                          value={
+                            editStatus
+                          }
+                          onChange={(
+                            event
+                          ) =>
+                            setEditStatus(
+                              event
+                                .target
+                                .value
+                            )
+                          }
+                        >
+                          {statuses.map(
+                            (item) => (
+                              <option
+                                key={
+                                  item
+                                }
+                                value={
+                                  item
+                                }
+                              >
+                                {item}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
 
-                    <div className="assignment-edit-actions">
-                      <button
-                        type="submit"
-                        disabled={
-                          updatingAssignmentId ===
+                      <div className="assignment-edit-actions">
+                        <button
+                          type="submit"
+                          disabled={
+                            updatingAssignmentId ===
+                            assignment.id
+                          }
+                        >
+                          {updatingAssignmentId ===
                           assignment.id
-                        }
-                      >
-                        {updatingAssignmentId ===
-                        assignment.id
-                          ? "Saving..."
-                          : "Save changes"}
-                      </button>
+                            ? "Saving..."
+                            : "Save changes"}
+                        </button>
 
-                      <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={cancelEditing}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <>
-                    <div>
-                      <p className="card-label">
-                        {assignment.course}
-                      </p>
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          onClick={
+                            cancelEditing
+                          }
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="card-label">
+                          {
+                            assignment.course
+                          }
+                        </p>
 
-                      <h2>
-                        {assignment.title}
-                      </h2>
+                        <h2>
+                          {
+                            assignment.title
+                          }
+                        </h2>
 
-                      <p className="assignment-due">
-                        Due {assignment.due}
-                      </p>
-                    </div>
+                        <p className="assignment-due">
+                          Due{" "}
+                          {
+                            assignment.due
+                          }
+                        </p>
+                      </div>
 
-                    <div className="assignment-card-meta">
-                      <span
-                        className={`assignment-priority assignment-priority-${assignment.priority
-                          .toLowerCase()
-                          .replaceAll(" ", "-")}`}
-                      >
-                        {assignment.priority}
-                      </span>
+                      <div className="assignment-card-meta">
+                        <span
+                          className={`assignment-priority assignment-priority-${assignment.priority
+                            .toLowerCase()
+                            .replaceAll(
+                              " ",
+                              "-"
+                            )}`}
+                        >
+                          {
+                            assignment.priority
+                          }
+                        </span>
 
-                      <span className="assignment-status">
-                        {assignment.status}
-                      </span>
+                        <span className="assignment-status">
+                          {
+                            assignment.status
+                          }
+                        </span>
 
-                      <button
-                        type="button"
-                        className="edit-button"
-                        onClick={() =>
-                          startEditing(
-                            assignment
-                          )
-                        }
-                      >
-                        Edit
-                      </button>
+                        <button
+                          type="button"
+                          className="edit-button"
+                          onClick={() =>
+                            startEditing(
+                              assignment
+                            )
+                          }
+                          disabled={
+                            deletingAssignmentId ===
+                            assignment.id
+                          }
+                        >
+                          Edit
+                        </button>
 
-                      <button
-                        type="button"
-                        className="danger-button"
-                        onClick={() =>
-                          handleDelete(
-                            assignment
-                          )
-                        }
-                        disabled={
-                          deletingAssignmentId ===
-                          assignment.id
-                        }
-                      >
-                        {deletingAssignmentId ===
-                        assignment.id
-                          ? "Deleting..."
-                          : "Delete"}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </article>
-            );
-          })}
+                        <button
+                          type="button"
+                          className="danger-button"
+                          onClick={() =>
+                            requestDelete(
+                              assignment
+                            )
+                          }
+                          disabled={
+                            deletingAssignmentId ===
+                            assignment.id
+                          }
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </article>
+              );
+            }
+          )}
         </section>
       </main>
+
+      <ConfirmModal
+        open={
+          assignmentToDelete !==
+          null
+        }
+        title={
+          assignmentToDelete
+            ? `Delete ${assignmentToDelete.title}?`
+            : "Delete assignment?"
+        }
+        message={
+          assignmentToDelete
+            ? `This will permanently delete "${assignmentToDelete.title}" from ${assignmentToDelete.course}. This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete assignment"
+        loading={
+          assignmentToDelete !==
+            null &&
+          deletingAssignmentId ===
+            assignmentToDelete.id
+        }
+        onCancel={cancelDelete}
+        onConfirm={
+          confirmDelete
+        }
+      />
     </div>
   );
 }

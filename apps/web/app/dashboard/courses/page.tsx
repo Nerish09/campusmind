@@ -15,6 +15,7 @@ import {
   updateCourse,
 } from "../../../lib/api";
 
+import ConfirmModal from "../components/ConfirmModal";
 import Sidebar from "../components/Sidebar";
 
 export default function CoursesPage() {
@@ -41,6 +42,9 @@ export default function CoursesPage() {
 
   const [deletingCourseId, setDeletingCourseId] =
     useState<number | null>(null);
+
+  const [courseToDelete, setCourseToDelete] =
+    useState<Course | null>(null);
 
   const [error, setError] = useState("");
 
@@ -166,20 +170,32 @@ export default function CoursesPage() {
     }
   }
 
-  async function handleDelete(course: Course) {
-    const confirmed = window.confirm(
-      `Delete "${course.name}"?\n\nThis will also delete assignments and study sessions connected to this course.`
-    );
+  function requestDelete(course: Course) {
+    setCourseToDelete(course);
+    setError("");
+  }
 
-    if (!confirmed) {
+  function cancelDelete() {
+    if (deletingCourseId !== null) {
       return;
     }
 
-    setDeletingCourseId(course.id);
+    setCourseToDelete(null);
+  }
+
+  async function confirmDelete() {
+    if (!courseToDelete) {
+      return;
+    }
+
+    setDeletingCourseId(courseToDelete.id);
     setError("");
 
     try {
-      await deleteCourse(course.id);
+      await deleteCourse(courseToDelete.id);
+
+      setCourseToDelete(null);
+
       await loadCourses();
     } catch (error) {
       if (error instanceof Error) {
@@ -485,6 +501,7 @@ export default function CoursesPage() {
                     <div className="course-card-actions">
                       <button
                         type="button"
+                        className="edit-button"
                         onClick={() =>
                           startEditing(course)
                         }
@@ -500,17 +517,14 @@ export default function CoursesPage() {
                         type="button"
                         className="danger-button"
                         onClick={() =>
-                          handleDelete(course)
+                          requestDelete(course)
                         }
                         disabled={
                           deletingCourseId ===
                           course.id
                         }
                       >
-                        {deletingCourseId ===
-                        course.id
-                          ? "Deleting..."
-                          : "Delete"}
+                        Delete
                       </button>
                     </div>
                   </>
@@ -520,6 +534,27 @@ export default function CoursesPage() {
           })}
         </section>
       </main>
+
+      <ConfirmModal
+        open={courseToDelete !== null}
+        title={
+          courseToDelete
+            ? `Delete ${courseToDelete.name}?`
+            : "Delete course?"
+        }
+        message={
+          courseToDelete
+            ? `This will permanently delete ${courseToDelete.code} — ${courseToDelete.name}. Any assignments and study sessions connected to this course will also be deleted. This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete course"
+        loading={
+          courseToDelete !== null &&
+          deletingCourseId === courseToDelete.id
+        }
+        onCancel={cancelDelete}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
