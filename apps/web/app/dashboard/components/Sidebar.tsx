@@ -5,7 +5,7 @@ const navItems = [
   { label: "Courses", href: "/dashboard/courses" },
   { label: "Assignments", href: "/dashboard/assignments" },
   { label: "Study", href: "/dashboard/study" },
-  { label: "AI Assistant", href: "/dashboard/ai" },
+  { label: "AI Assistant", href: "/dashboard/assistant" },
 ];
 
 export default function Sidebar() {
