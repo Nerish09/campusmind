@@ -231,9 +231,11 @@ export async function deleteAssignment(
 
 export type StudySession = {
   id: number;
+  course_id: number;
   subject: string;
   topic: string;
   duration: string;
+  duration_minutes: number;
   status: string;
 };
 
@@ -241,6 +243,13 @@ export type CreateStudySession = {
   course_id: number;
   topic: string;
   duration_minutes: number;
+  status?: string;
+};
+
+export type UpdateStudySession = {
+  course_id?: number;
+  topic?: string;
+  duration_minutes?: number;
   status?: string;
 };
 
@@ -268,7 +277,37 @@ export async function createStudySession(
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create study session");
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to create study session"
+    );
+  }
+
+  return response.json();
+}
+
+export async function updateStudySession(
+  sessionId: number,
+  data: UpdateStudySession
+): Promise<StudySession> {
+  const response = await fetch(
+    `${API_URL}/study-sessions/${sessionId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to update study session"
+    );
   }
 
   return response.json();
@@ -277,33 +316,28 @@ export async function createStudySession(
 export async function updateStudySessionStatus(
   sessionId: number,
   status: string
-): Promise<{ id: number; status: string }> {
-  const response = await fetch(`${API_URL}/study-sessions/${sessionId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      status,
-    }),
+): Promise<StudySession> {
+  return updateStudySession(sessionId, {
+    status,
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to update study session");
-  }
-
-  return response.json();
 }
 
 export async function deleteStudySession(
   sessionId: number
 ): Promise<void> {
-  const response = await fetch(`${API_URL}/study-sessions/${sessionId}`, {
-    method: "DELETE",
-  });
+  const response = await fetch(
+    `${API_URL}/study-sessions/${sessionId}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to delete study session");
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to delete study session"
+    );
   }
 }
 
