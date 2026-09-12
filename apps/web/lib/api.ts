@@ -29,6 +29,13 @@ export type Course = {
   progress: number;
 };
 
+export type CreateCourse = {
+  code: string;
+  name: string;
+  instructor: string;
+  progress: number;
+};
+
 export async function getCourses(): Promise<Course[]> {
   const response = await fetch(`${API_URL}/courses`, {
     cache: "no-store",
@@ -36,6 +43,28 @@ export async function getCourses(): Promise<Course[]> {
 
   if (!response.ok) {
     throw new Error("Failed to fetch courses");
+  }
+
+  return response.json();
+}
+
+export async function createCourse(
+  data: CreateCourse
+): Promise<Course> {
+  const response = await fetch(`${API_URL}/courses`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to create course"
+    );
   }
 
   return response.json();
