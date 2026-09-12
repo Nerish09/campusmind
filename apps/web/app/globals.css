@@ -872,3 +872,472 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ========================================
+   COURSE CARD ACTION BUTTONS
+======================================== */
+
+.course-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+
+/* Shared button styling */
+.course-card-actions button {
+  min-width: 88px;
+  height: 44px;
+  padding: 0 20px;
+
+  border-radius: 12px;
+  border: 1px solid transparent;
+
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+/* ========================================
+   EDIT BUTTON
+======================================== */
+
+.edit-button {
+  background: #f5f5f7;
+  color: #111318;
+  border-color: #f5f5f7;
+}
+
+.edit-button:hover:not(:disabled) {
+  background: #ffffff;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.edit-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+
+/* ========================================
+   DELETE BUTTON
+======================================== */
+
+.danger-button {
+  background: transparent;
+
+  color: #8f95a5;
+
+  border: 1px solid #303542;
+}
+
+.danger-button:hover:not(:disabled) {
+  background: rgba(255, 90, 100, 0.08);
+
+  color: #ff858d;
+
+  border-color: rgba(255, 90, 100, 0.4);
+
+  transform: translateY(-1px);
+}
+
+.danger-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+
+/* ========================================
+   DISABLED BUTTONS
+======================================== */
+
+.course-card-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ========================================
+   KEYBOARD ACCESSIBILITY
+======================================== */
+
+.course-card-actions button:focus-visible {
+  outline: 2px solid #9692ff;
+  outline-offset: 3px;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+  .course-card-actions {
+    gap: 10px;
+    padding-top: 22px;
+  }
+
+  .course-card-actions button {
+    min-width: 78px;
+    height: 42px;
+    padding: 0 16px;
+
+    font-size: 13px;
+  }
+}
+
+
+/* ========================================
+   ASSIGNMENTS
+======================================== */
+
+.assignment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.assignment-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 24px 26px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018),
+      transparent
+    ),
+    var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.assignment-card:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(139, 140, 255, 0.3);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(139, 140, 255, 0.025),
+      transparent
+    ),
+    var(--surface-hover);
+}
+
+.assignment-card h2 {
+  margin: 8px 0 8px;
+
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.assignment-due {
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+}
+
+.assignment-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
+
+/* ========================================
+   ASSIGNMENT PRIORITY BADGES
+======================================== */
+
+.assignment-priority {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 34px;
+
+  padding: 0 12px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.assignment-priority-low-priority {
+  background: rgba(99, 211, 145, 0.08);
+  color: #8ee3b1;
+
+  border: 1px solid rgba(99, 211, 145, 0.2);
+}
+
+.assignment-priority-medium-priority {
+  background: rgba(255, 196, 92, 0.08);
+  color: #ffd27c;
+
+  border: 1px solid rgba(255, 196, 92, 0.22);
+}
+
+.assignment-priority-high-priority {
+  background: rgba(255, 107, 117, 0.08);
+  color: #ff9299;
+
+  border: 1px solid rgba(255, 107, 117, 0.24);
+}
+
+
+/* ========================================
+   ASSIGNMENT CREATE FORM
+======================================== */
+
+.assignment-form {
+  display: grid;
+
+  grid-template-columns:
+    minmax(180px, 1fr)
+    minmax(220px, 1.4fr)
+    minmax(150px, 0.8fr)
+    minmax(170px, 0.9fr)
+    minmax(160px, 0.9fr)
+    auto;
+
+  gap: 16px;
+
+  align-items: end;
+
+  padding: 26px;
+}
+
+.assignment-form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.assignment-form-field label {
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.assignment-form-field input,
+.assignment-form-field select {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: #0a0d13;
+  color: var(--text);
+
+  outline: none;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.assignment-form-field input:focus,
+.assignment-form-field select:focus {
+  border-color: var(--accent);
+
+  background: #0d1119;
+
+  box-shadow:
+    0 0 0 3px rgba(139, 140, 255, 0.1);
+}
+
+.assignment-form-field input::placeholder {
+  color: #666c7b;
+}
+
+
+/* ========================================
+   ASSIGNMENT EDIT MODE
+======================================== */
+
+.assignment-edit-form {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(180px, 1fr)
+    minmax(220px, 1.4fr)
+    minmax(150px, 0.8fr)
+    minmax(170px, 0.9fr)
+    minmax(160px, 0.9fr);
+
+  gap: 16px;
+
+  align-items: end;
+}
+
+.assignment-edit-actions {
+  grid-column: 1 / -1;
+
+  display: flex;
+  gap: 10px;
+
+  margin-top: 4px;
+}
+
+.assignment-card:has(.assignment-edit-form) {
+  align-items: stretch;
+
+  border-color: rgba(139, 140, 255, 0.38);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(139, 140, 255, 0.04),
+      transparent
+    ),
+    var(--surface);
+}
+
+
+/* ========================================
+   ASSIGNMENT BUTTONS
+======================================== */
+
+.assignment-card-meta .edit-button {
+  min-width: 82px;
+  height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 11px;
+
+  background: #f5f5f7;
+  color: #111318;
+
+  border: 1px solid #f5f5f7;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.assignment-card-meta .edit-button:hover:not(:disabled) {
+  background: #ffffff;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.assignment-card-meta .danger-button {
+  min-width: 82px;
+  height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 11px;
+
+  background: transparent;
+  color: var(--text-secondary);
+
+  border: 1px solid var(--border);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.assignment-card-meta .danger-button:hover:not(:disabled) {
+  background: rgba(255, 90, 100, 0.08);
+
+  color: #ff858d;
+
+  border-color: rgba(255, 90, 100, 0.35);
+
+  transform: translateY(-1px);
+}
+
+
+/* ========================================
+   RESPONSIVE ASSIGNMENTS
+======================================== */
+
+@media (max-width: 1200px) {
+  .assignment-form {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .assignment-form button {
+    width: fit-content;
+  }
+
+  .assignment-edit-form {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .assignment-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .assignment-card-meta {
+    width: 100%;
+  }
+
+  .assignment-form,
+  .assignment-edit-form {
+    grid-template-columns: 1fr;
+  }
+
+  .assignment-edit-actions {
+    grid-column: auto;
+  }
+}

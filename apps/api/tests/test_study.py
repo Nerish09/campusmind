@@ -6,6 +6,27 @@ from app.main import app
 client = TestClient(app)
 
 
+def get_operating_systems_course_id():
+    response = client.get("/courses")
+
+    assert response.status_code == 200
+
+    courses = response.json()
+
+    course = next(
+        (
+            course
+            for course in courses
+            if course["code"] == "CS 3013"
+        ),
+        None,
+    )
+
+    assert course is not None
+
+    return course["id"]
+
+
 def test_get_study_sessions():
     response = client.get("/study-sessions")
 
@@ -14,8 +35,10 @@ def test_get_study_sessions():
 
 
 def test_create_study_session():
+    course_id = get_operating_systems_course_id()
+
     payload = {
-        "course_id": 1,
+        "course_id": course_id,
         "topic": "API Testing",
         "duration_minutes": 30,
         "status": "Planned",
@@ -33,7 +56,6 @@ def test_create_study_session():
     assert data["duration"] == "30 min"
     assert data["status"] == "Planned"
 
-    # Clean up the test record
     delete_response = client.delete(
         f"/study-sessions/{data['id']}"
     )
@@ -42,8 +64,10 @@ def test_create_study_session():
 
 
 def test_create_study_session_invalid_duration():
+    course_id = get_operating_systems_course_id()
+
     payload = {
-        "course_id": 1,
+        "course_id": course_id,
         "topic": "Invalid Duration",
         "duration_minutes": -10,
         "status": "Planned",
@@ -52,7 +76,10 @@ def test_create_study_session_invalid_duration():
     response = client.post("/study-sessions", json=payload)
 
     assert response.status_code == 400
-    assert response.json()["detail"] == "Duration must be greater than 0"
+    assert (
+        response.json()["detail"]
+        == "Duration must be greater than 0"
+    )
 
 
 def test_create_study_session_invalid_course():

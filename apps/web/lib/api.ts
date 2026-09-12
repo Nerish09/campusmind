@@ -36,6 +36,13 @@ export type CreateCourse = {
   progress: number;
 };
 
+export type UpdateCourse = {
+  code?: string;
+  name?: string;
+  instructor?: string;
+  progress?: number;
+};
+
 export async function getCourses(): Promise<Course[]> {
   const response = await fetch(`${API_URL}/courses`, {
     cache: "no-store",
@@ -70,16 +77,73 @@ export async function createCourse(
   return response.json();
 }
 
+export async function updateCourse(
+  courseId: number,
+  data: UpdateCourse
+): Promise<Course> {
+  const response = await fetch(`${API_URL}/courses/${courseId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to update course"
+    );
+  }
+
+  return response.json();
+}
+
+export async function deleteCourse(
+  courseId: number
+): Promise<void> {
+  const response = await fetch(`${API_URL}/courses/${courseId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to delete course"
+    );
+  }
+}
+
 // --------------------
 // Assignments
 // --------------------
 
 export type Assignment = {
+  id: number;
+  course_id: number;
   course: string;
   title: string;
   due: string;
   priority: string;
   status: string;
+};
+
+export type CreateAssignment = {
+  course_id: number;
+  title: string;
+  due_date: string;
+  priority: string;
+  status: string;
+};
+
+export type UpdateAssignment = {
+  course_id?: number;
+  title?: string;
+  due_date?: string;
+  priority?: string;
+  status?: string;
 };
 
 export async function getAssignments(): Promise<Assignment[]> {
@@ -94,6 +158,73 @@ export async function getAssignments(): Promise<Assignment[]> {
   return response.json();
 }
 
+export async function createAssignment(
+  data: CreateAssignment
+): Promise<Assignment> {
+  const response = await fetch(`${API_URL}/assignments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to create assignment"
+    );
+  }
+
+  return response.json();
+}
+
+export async function updateAssignment(
+  assignmentId: number,
+  data: UpdateAssignment
+): Promise<Assignment> {
+  const response = await fetch(
+    `${API_URL}/assignments/${assignmentId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to update assignment"
+    );
+  }
+
+  return response.json();
+}
+
+export async function deleteAssignment(
+  assignmentId: number
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/assignments/${assignmentId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.detail || "Failed to delete assignment"
+    );
+  }
+}
+
 // --------------------
 // Study Sessions
 // --------------------
@@ -104,6 +235,13 @@ export type StudySession = {
   topic: string;
   duration: string;
   status: string;
+};
+
+export type CreateStudySession = {
+  course_id: number;
+  topic: string;
+  duration_minutes: number;
+  status?: string;
 };
 
 export async function getStudySessions(): Promise<StudySession[]> {
@@ -117,13 +255,6 @@ export async function getStudySessions(): Promise<StudySession[]> {
 
   return response.json();
 }
-
-export type CreateStudySession = {
-  course_id: number;
-  topic: string;
-  duration_minutes: number;
-  status?: string;
-};
 
 export async function createStudySession(
   data: CreateStudySession
