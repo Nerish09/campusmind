@@ -14,6 +14,7 @@ def get_courses(db: Session = Depends(get_db)):
 
     return [
         {
+            "id": course.id,
             "code": course.code,
             "name": course.name,
             "instructor": course.instructor,

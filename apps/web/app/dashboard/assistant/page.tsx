@@ -6,14 +6,14 @@ import { askAssistant } from "../../../lib/api";
 import Sidebar from "../components/Sidebar";
 
 const suggestions = [
-  "Explain process scheduling in simple terms",
-  "Quiz me on cache memory",
-  "Help me plan what to study tonight",
+  "What should I study today?",
+  "Which assignment should I prioritize?",
+  "Help me plan my study session.",
 ];
 
 export default function AssistantPage() {
   const [message, setMessage] = useState("");
-  const [response, setResponse] = useState("");
+  const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,11 +28,11 @@ export default function AssistantPage() {
 
     setLoading(true);
     setError("");
-    setResponse("");
+    setReply("");
 
     try {
       const data = await askAssistant(trimmedMessage);
-      setResponse(data.response);
+      setReply(data.reply);
     } catch {
       setError("CampusMind AI is unavailable right now.");
     } finally {
@@ -40,7 +40,7 @@ export default function AssistantPage() {
     }
   }
 
-  function useSuggestion(suggestion: string) {
+  function handleSuggestion(suggestion: string) {
     setMessage(suggestion);
   }
 
@@ -54,8 +54,7 @@ export default function AssistantPage() {
             <p className="eyebrow">AI ASSISTANT</p>
             <h1>Study with CampusMind AI</h1>
             <p className="dashboard-subtitle">
-              Ask questions and get help grounded in your courses and study
-              material.
+              Ask questions and get help organizing your academic work.
             </p>
           </div>
         </section>
@@ -64,12 +63,11 @@ export default function AssistantPage() {
           <div className="assistant-chat">
             <div className="assistant-message">
               <p className="card-label">CAMPUSMIND AI</p>
-
               <h2>What are we working on?</h2>
 
               <p>
-                I can explain concepts, help you study, create practice
-                questions, or help organize your academic work.
+                I can help you decide what to study, prioritize assignments,
+                and organize your coursework.
               </p>
             </div>
 
@@ -78,17 +76,17 @@ export default function AssistantPage() {
                 <button
                   key={suggestion}
                   type="button"
-                  onClick={() => useSuggestion(suggestion)}
+                  onClick={() => handleSuggestion(suggestion)}
                 >
                   {suggestion}
                 </button>
               ))}
             </div>
 
-            {response && (
+            {reply && (
               <div className="assistant-response">
-                <p className="card-label">RESPONSE</p>
-                <p>{response}</p>
+                <p className="card-label">CAMPUSMIND AI</p>
+                <p>{reply}</p>
               </div>
             )}
 
@@ -116,26 +114,12 @@ export default function AssistantPage() {
           <aside className="assistant-context">
             <p className="card-label">ACADEMIC CONTEXT</p>
 
-            <h2>Your courses</h2>
-
-            <div className="context-course">
-              <span>CS 3013</span>
-              <strong>Operating Systems</strong>
-            </div>
-
-            <div className="context-course">
-              <span>CS 3023</span>
-              <strong>Computer Architecture</strong>
-            </div>
-
-            <div className="context-course">
-              <span>CS 3203</span>
-              <strong>Software Design & Development</strong>
-            </div>
+            <h2>CampusMind AI</h2>
 
             <p className="context-note">
-              Later, CampusMind will use your actual course material to provide
-              more relevant answers.
+              This version is connected to your FastAPI backend. Next, we can
+              make it use your actual courses, assignments, and study sessions
+              from PostgreSQL when answering.
             </p>
           </aside>
         </section>

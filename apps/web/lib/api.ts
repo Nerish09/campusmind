@@ -1,6 +1,10 @@
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
+// --------------------
+// Health
+// --------------------
+
 export async function getHealth() {
   const response = await fetch(`${API_URL}/health`, {
     cache: "no-store",
@@ -13,7 +17,12 @@ export async function getHealth() {
   return response.json();
 }
 
+// --------------------
+// Courses
+// --------------------
+
 export type Course = {
+  id: number;
   code: string;
   name: string;
   instructor: string;
@@ -31,6 +40,10 @@ export async function getCourses(): Promise<Course[]> {
 
   return response.json();
 }
+
+// --------------------
+// Assignments
+// --------------------
 
 export type Assignment = {
   course: string;
@@ -52,7 +65,12 @@ export async function getAssignments(): Promise<Assignment[]> {
   return response.json();
 }
 
+// --------------------
+// Study Sessions
+// --------------------
+
 export type StudySession = {
+  id: number;
   subject: string;
   topic: string;
   duration: string;
@@ -71,9 +89,59 @@ export async function getStudySessions(): Promise<StudySession[]> {
   return response.json();
 }
 
+export type CreateStudySession = {
+  course_id: number;
+  topic: string;
+  duration_minutes: number;
+  status?: string;
+};
+
+export async function createStudySession(
+  data: CreateStudySession
+): Promise<StudySession> {
+  const response = await fetch(`${API_URL}/study-sessions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create study session");
+  }
+
+  return response.json();
+}
+
+export async function updateStudySessionStatus(
+  sessionId: number,
+  status: string
+): Promise<{ id: number; status: string }> {
+  const response = await fetch(`${API_URL}/study-sessions/${sessionId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      status,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update study session");
+  }
+
+  return response.json();
+}
+
+// --------------------
+// AI Assistant
+// --------------------
+
 export type AssistantResponse = {
   message: string;
-  response: string;
+  reply: string;
 };
 
 export async function askAssistant(
@@ -85,7 +153,7 @@ export async function askAssistant(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      message: message,
+      message,
     }),
   });
 

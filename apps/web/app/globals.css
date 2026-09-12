@@ -615,3 +615,56 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+
+.study-form {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 0.7fr auto;
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid #292c3a;
+  border-radius: 14px;
+  background: #0d0f15;
+}
+
+.study-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.study-form-field label {
+  color: #aeb2c2;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.study-form-field input,
+.study-form-field select {
+  width: 100%;
+  border: 1px solid #34384b;
+  background: #11131a;
+  color: #f7f7fb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font: inherit;
+  outline: none;
+}
+
+.study-form-field input:focus,
+.study-form-field select:focus {
+  border-color: #8c92ff;
+}
+
+.study-error {
+  color: #ff9a9a;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .study-form {
+    grid-template-columns: 1fr;
+  }
+}
