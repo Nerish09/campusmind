@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -53,9 +53,23 @@ def create_study_session(
     if course is None:
         raise HTTPException(status_code=404, detail="Course not found")
 
+    if session_data.duration_minutes <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Duration must be greater than 0",
+        )
+
+    allowed_statuses = {"Planned", "In progress", "Completed"}
+
+    if session_data.status not in allowed_statuses:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid study session status",
+        )
+
     study_session = StudySession(
         course_id=session_data.course_id,
-        topic=session_data.topic,
+        topic=session_data.topic.strip(),
         duration_minutes=session_data.duration_minutes,
         status=session_data.status,
     )
@@ -82,7 +96,10 @@ def update_study_session(
     study_session = db.get(StudySession, session_id)
 
     if study_session is None:
-        raise HTTPException(status_code=404, detail="Study session not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Study session not found",
+        )
 
     allowed_statuses = {"Planned", "In progress", "Completed"}
 
@@ -101,3 +118,22 @@ def update_study_session(
         "id": study_session.id,
         "status": study_session.status,
     }
+
+
+@router.delete("/study-sessions/{session_id}", status_code=204)
+def delete_study_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+):
+    study_session = db.get(StudySession, session_id)
+
+    if study_session is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Study session not found",
+        )
+
+    db.delete(study_session)
+    db.commit()
+
+    return Response(status_code=204)

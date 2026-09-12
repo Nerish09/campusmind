@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import {
   createStudySession,
+  deleteStudySession,
   getCourses,
   getStudySessions,
   updateStudySessionStatus,
@@ -23,6 +24,9 @@ export default function StudyPage() {
 
   const [loading, setLoading] = useState(false);
   const [updatingSessionId, setUpdatingSessionId] = useState<number | null>(
+    null
+  );
+  const [deletingSessionId, setDeletingSessionId] = useState<number | null>(
     null
   );
   const [error, setError] = useState("");
@@ -101,7 +105,28 @@ export default function StudyPage() {
     }
   }
 
-  // Calculate real metrics from our study-session data.
+  async function handleDelete(session: StudySession) {
+    const confirmed = window.confirm(
+      `Delete "${session.topic}" from ${session.subject}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingSessionId(session.id);
+    setError("");
+
+    try {
+      await deleteStudySession(session.id);
+      await loadStudySessions();
+    } catch {
+      setError("Failed to delete study session.");
+    } finally {
+      setDeletingSessionId(null);
+    }
+  }
+
   const completedSessions = studySessions.filter(
     (session) => session.status === "Completed"
   );
@@ -243,7 +268,10 @@ export default function StudyPage() {
                       onClick={() =>
                         handleStatusUpdate(session.id, "In progress")
                       }
-                      disabled={updatingSessionId === session.id}
+                      disabled={
+                        updatingSessionId === session.id ||
+                        deletingSessionId === session.id
+                      }
                     >
                       {updatingSessionId === session.id
                         ? "Starting..."
@@ -257,13 +285,29 @@ export default function StudyPage() {
                       onClick={() =>
                         handleStatusUpdate(session.id, "Completed")
                       }
-                      disabled={updatingSessionId === session.id}
+                      disabled={
+                        updatingSessionId === session.id ||
+                        deletingSessionId === session.id
+                      }
                     >
                       {updatingSessionId === session.id
                         ? "Completing..."
                         : "Complete"}
                     </button>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(session)}
+                    disabled={
+                      deletingSessionId === session.id ||
+                      updatingSessionId === session.id
+                    }
+                  >
+                    {deletingSessionId === session.id
+                      ? "Deleting..."
+                      : "Delete"}
+                  </button>
                 </div>
               </article>
             ))}

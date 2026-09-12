@@ -135,6 +135,18 @@ export async function updateStudySessionStatus(
   return response.json();
 }
 
+export async function deleteStudySession(
+  sessionId: number
+): Promise<void> {
+  const response = await fetch(`${API_URL}/study-sessions/${sessionId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete study session");
+  }
+}
+
 // --------------------
 // AI Assistant
 // --------------------
